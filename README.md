@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Swat Nayab — Website
 
-## Getting Started
+Public storefront. No accounts, no login, no payment processing — customers
+browse, build a cart, enter their name/phone/address, and "checkout" opens
+WhatsApp with the full order pre-filled to send to the shop. The shop owner
+confirms and fulfills it from there (and enters it into the POS register
+manually).
 
-First, run the development server:
+Reads its product catalog from the **same Supabase project** as `../pos/`,
+using the anon key (read-only — see the `anon read ...` policies in
+`../supabase/migrations`). No order/stock writes happen from this app.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Copy `.env.local.example` to `.env.local` and fill in the same
+   `SUPABASE_URL` you used for `pos/.env`, plus the anon key from
+   Project Settings → API.
+2. For WhatsApp checkout to work, set a WhatsApp number in the POS's
+   Settings tab (`whatsapp_handle`) — the website reads it from there.
+3. `npm install`
+4. `npm run dev` — open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Design
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`stitch_nayab_pos_inventory_system/` has the mockups this was built from
+("Heritage Gold & Emerald" — deep emerald + gold, serif headlines). Design
+tokens live in `app/globals.css`.
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+- `/` — hero, featured products, heritage blurb.
+- `/shop` — full catalog, filterable by category/subcategory.
+- `/shop/[id]` — product detail, weight/variant selector, add to cart.
+- `/cart` — cart, delivery details form, WhatsApp checkout.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cart state is client-side only (`localStorage`, see `lib/cart-context.tsx`)
+— there's no backend cart or account to tie it to.
