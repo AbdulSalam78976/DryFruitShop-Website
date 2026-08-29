@@ -1,84 +1,80 @@
 @import "tailwindcss";
 
-/* "Heritage Gold & Emerald" design system -- ported directly from
-   stitch_nayab_pos_inventory_system/heritage_gold_emerald/DESIGN.md and the
-   four code.html mockups (same token set in each). */
+/* "Swat Nayab Storefront" design system -- warm cream, saffron gold and deep
+   emerald, lifted from the approved Claude Design mockup
+   (claude.ai/design/p/57d9d13a-8f14-4b28-833c-942cd5928a19). Libre Caslon for
+   headings, Plus Jakarta Sans for body copy, Noto Nastaliq Urdu for Urdu
+   labels, IBM Plex Mono (tabular figures) for every price/quantity. */
 @theme inline {
-  --font-serif: var(--font-libre-caslon), Georgia, serif;
+  --font-heading: var(--font-libre-caslon), Georgia, serif;
   --font-sans: var(--font-plus-jakarta), system-ui, sans-serif;
-  --font-nastaliq: var(--font-noto-nastaliq), serif;
+  --font-urdu: var(--font-noto-nastaliq), serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
-  --color-surface: #fcf9f8;
-  --color-surface-dim: #dcd9d9;
-  --color-surface-bright: #fcf9f8;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f6f3f2;
-  --color-surface-container: #f0eded;
-  --color-surface-container-high: #eae7e7;
-  --color-surface-container-highest: #e4e2e1;
-  --color-surface-variant: #e4e2e1;
-  --color-background: #fcf9f8;
+  --color-cream: #faf6ee;
+  --color-cream-dim: #e9dfcd;
+  --color-surface: #ffffff;
+  --color-ink: #16211c;
 
-  --color-on-surface: #1b1c1c;
-  --color-on-surface-variant: #404944;
-  --color-on-background: #1b1c1c;
-  --color-inverse-surface: #303030;
-  --color-inverse-on-surface: #f3f0f0;
-  --color-outline: #707974;
-  --color-outline-variant: #bfc9c3;
+  --color-gold: #b57415;
+  --color-gold-100: #fdf6e3;
+  --color-gold-200: #f8e7bd;
+  --color-gold-300: #f0d28a;
+  --color-gold-400: #e2b155;
+  --color-gold-500: #c9901f;
+  --color-gold-600: #ab7413;
+  --color-gold-700: #8a5b0d;
+  --color-gold-800: #66430a;
+  --color-gold-900: #412b07;
 
-  --color-primary: #003527;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #064e3b;
-  --color-on-primary-container: #80bea6;
-  --color-inverse-primary: #95d3ba;
-  --color-surface-tint: #2b6954;
-  --color-primary-fixed: #b0f0d6;
-  --color-primary-fixed-dim: #95d3ba;
-  --color-on-primary-fixed: #002117;
-  --color-on-primary-fixed-variant: #0b513d;
+  --color-green: #0d4a35;
+  --color-green-deep: #06281f;
+  --color-green-100: #e8f2ec;
+  --color-green-200: #cbe2d5;
+  --color-green-300: #a3cab6;
+  --color-green-400: #6ea88d;
+  --color-green-500: #3f8266;
+  --color-green-600: #1f6349;
+  --color-green-700: #0d4a35;
+  --color-green-800: #083426;
+  --color-green-900: #052018;
 
-  /* Gold -- this is what actually reads as "premium" against the emerald
-     header/footer. The plain `secondary` role is a dark, low-contrast gold
-     meant for text on LIGHT backgrounds; `secondary-fixed(-dim)` is the
-     bright gold used for text/icons on the dark emerald primary surfaces
-     (nav, footer, hero). Mixing these up is why the first pass looked flat. */
-  --color-secondary: #735c00;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #fed65b;
-  --color-on-secondary-container: #745c00;
-  --color-secondary-fixed: #ffe088;
-  --color-secondary-fixed-dim: #e9c349;
-  --color-on-secondary-fixed: #241a00;
-  --color-on-secondary-fixed-variant: #574500;
+  --color-stone-50: #fbf8f3;
+  --color-stone-100: #f2ece1;
+  --color-stone-200: #e3dacb;
+  --color-stone-300: #c9bda9;
+  --color-stone-400: #a99b85;
+  --color-stone-500: #877a66;
+  --color-stone-600: #65594a;
+  --color-stone-700: #453c31;
+  --color-stone-800: #2a241d;
 
-  --color-tertiary: #2d2e2c;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #444442;
-  --color-on-tertiary-container: #b2b1ae;
-  --color-tertiary-fixed: #e4e2de;
-  --color-tertiary-fixed-dim: #c8c6c3;
-  --color-on-tertiary-fixed: #1b1c1a;
-  --color-on-tertiary-fixed-variant: #474744;
-
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --shadow-sm: 0 1px 2px rgba(22, 33, 28, 0.05);
+  --shadow-md: 0 2px 8px rgba(22, 33, 28, 0.07);
+  --shadow-lg: 0 16px 36px rgba(22, 33, 28, 0.14), 0 2px 5px rgba(22, 33, 28, 0.07);
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-on-surface);
+  background: var(--color-cream);
+  color: var(--color-ink);
 }
 
 @layer base {
   h1, h2, h3, h4 {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
+    letter-spacing: -0.012em;
   }
 
-  .font-nastaliq {
-    font-family: var(--font-nastaliq);
+  .font-urdu {
+    font-family: var(--font-urdu);
+    direction: rtl;
+    line-height: 1.9;
+  }
+
+  .font-mono-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
   }
 
   .material-symbols-outlined {
@@ -99,5 +95,29 @@ body {
 
   .material-symbols-outlined.icon-fill {
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .checkout-input {
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(22, 33, 28, 0.12);
+    background: var(--color-stone-50);
+    padding: 0.6rem 0.9rem;
+    font-size: 13.5px;
+    color: var(--color-ink);
+  }
+
+  .checkout-input:focus {
+    outline: 2px solid var(--color-gold-400);
+    outline-offset: 0;
   }
 }

@@ -29,6 +29,7 @@ export type Product = {
   image_url: string | null;
   is_active: boolean;
   grades: ProductGrade[];
+  category?: { id: string; name: string; image_url: string | null } | null;
 };
 
 export type Bundle = {
@@ -40,6 +41,7 @@ export type Bundle = {
 
 export type Settings = {
   shop_name: string | null;
+  shop_address: string | null;
   order_number: string | null;
   complaint_number: string | null;
   whatsapp_handle: string | null;

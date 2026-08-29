@@ -10,11 +10,23 @@ export function toWhatsAppNumber(raw: string): string {
   return digits;
 }
 
+export type DeliveryMethod = "delivery" | "pickup";
+export type PaymentMethod = "cod" | "easypaisa" | "jazzcash";
+
+export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
+  cod: "Cash on delivery",
+  easypaisa: "Easypaisa",
+  jazzcash: "JazzCash",
+};
+
 export type CustomerDetails = {
   name: string;
   phone: string;
   address: string;
   notes?: string;
+  deliveryMethod?: DeliveryMethod;
+  paymentMethod?: PaymentMethod;
+  orderNo?: string;
 };
 
 export function buildOrderMessage(shopName: string, lines: CartLine[], customer: CustomerDetails, total: number) {
@@ -27,10 +39,16 @@ export function buildOrderMessage(shopName: string, lines: CartLine[], customer:
     .join("\n");
 
   const notesLine = customer.notes?.trim() ? `Notes: ${customer.notes.trim()}\n` : "";
+  const orderNoLine = customer.orderNo ? `Order #: ${customer.orderNo}\n` : "";
+  const deliveryLine = customer.deliveryMethod ? `${customer.deliveryMethod === "pickup" ? "Pickup at the shop" : "Delivery"}\n` : "";
+  const paymentLine = customer.paymentMethod ? `Payment: ${PAYMENT_LABELS[customer.paymentMethod]}\n` : "";
 
   return (
     `*New Order — ${shopName}*\n\n` +
-    `*Customer Details*\n` +
+    orderNoLine +
+    deliveryLine +
+    paymentLine +
+    `\n*Customer Details*\n` +
     `Name: ${customer.name}\n` +
     `Phone: ${customer.phone}\n` +
     `Address: ${customer.address}\n` +

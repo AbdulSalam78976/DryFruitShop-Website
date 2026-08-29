@@ -6,15 +6,22 @@ import { useState } from "react";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/cart-context";
 import { formatCurrency, formatGrams, pricePerDisplayUnit } from "@/lib/format";
+import { resolveImageUrl } from "@/lib/image";
 
-const QUICK_WEIGHTS_G = [250, 500, 1000];
+const DEFAULT_GRAMS = 250;
+const STEP_G = 100;
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addLine } = useCart();
   const grade = product.grades[0];
   const isUnit = grade?.pricing_unit === "unit";
-  const [grams, setGrams] = useState(QUICK_WEIGHTS_G[0]);
-  const imageUrl = grade?.image_url || product.image_url;
+  const [qty, setQty] = useState(isUnit ? 1 : DEFAULT_GRAMS);
+  const imageUrl = resolveImageUrl(product, grade?.image_url);
+
+  const step = (direction: 1 | -1) => {
+    const delta = isUnit ? 1 : STEP_G;
+    setQty((q) => Math.max(delta, q + direction * delta));
+  };
 
   const handleAdd = () => {
     if (!grade) return;
@@ -22,75 +29,70 @@ export default function ProductCard({ product }: { product: Product }) {
       gradeId: grade.id,
       productName: product.name,
       gradeName: grade.name,
-      imageUrl: grade.image_url || product.image_url,
+      imageUrl: resolveImageUrl(product, grade.image_url),
       pricePerBaseUnit: grade.price,
       pricingUnit: grade.pricing_unit,
       displayUnit: grade.display_unit,
-      quantity: isUnit ? 1 : grams,
+      quantity: qty,
     });
   };
 
   return (
-    <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-transparent bg-surface transition-all duration-500 hover:-translate-y-2 hover:border-secondary-fixed-dim/30 hover:shadow-[0_20px_40px_rgba(212,175,55,0.08)]">
-      <Link href={`/shop/${product.id}`} className="block">
-        <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-surface-container-lowest p-6">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              className="scale-95 object-cover drop-shadow-xl transition-transform duration-700 ease-out group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-outline">
-              <span className="material-symbols-outlined text-4xl">nutrition</span>
-            </div>
-          )}
-          <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface/90 shadow-sm backdrop-blur-sm">
-            <span className="material-symbols-outlined icon-fill text-[20px] text-secondary-fixed">workspace_premium</span>
-          </div>
-        </div>
-
-        <div className="p-6 pb-0">
-          <h3 className="font-serif text-xl text-primary transition-colors group-hover:text-primary-container">{product.name}</h3>
-          {product.name_urdu && <p className="font-nastaliq text-lg text-on-surface-variant opacity-80">{product.name_urdu}</p>}
-          {product.description && <p className="mt-2 line-clamp-2 text-sm text-on-surface-variant">{product.description}</p>}
-        </div>
-      </Link>
-
-      <div className="mt-auto p-6 pt-4">
-        {grade && !isUnit && (
-          <div className="mb-4 flex gap-2">
-            {QUICK_WEIGHTS_G.map((g) => (
-              <button
-                key={g}
-                type="button"
-                onClick={() => setGrams(g)}
-                className={`rounded px-3 py-1 text-xs font-semibold transition-colors ${
-                  grams === g ? "bg-primary text-secondary-fixed shadow-sm" : "border border-primary/20 text-primary hover:border-primary"
-                }`}
-              >
-                {formatGrams(g)}
-              </button>
-            ))}
+    <article className="flex h-full flex-col overflow-hidden rounded-[22px] border border-ink/10 bg-white shadow-sm">
+      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-stone-100">
+        {imageUrl ? (
+          <Image src={imageUrl} alt={product.name} fill className="object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-stone-400">
+            <span className="material-symbols-outlined text-4xl">nutrition</span>
           </div>
         )}
-        <div className="flex items-center justify-between">
-          {grade && (
-            <span className="font-serif text-2xl text-primary">
-              {formatCurrency(pricePerDisplayUnit(grade.price, grade.display_unit))}
-            </span>
-          )}
-          <button
-            type="button"
-            aria-label="Add to cart"
-            onClick={handleAdd}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-primary shadow-md transition-all hover:scale-110 hover:bg-primary-container"
-          >
-            <span className="material-symbols-outlined text-secondary-fixed">add</span>
-          </button>
-        </div>
+      </Link>
+      <div className="flex flex-1 flex-col gap-1.5 p-3.5">
+        <Link href={`/product/${product.id}`}>
+          <h3 className="truncate font-heading text-base leading-tight">{product.name}</h3>
+          {product.name_urdu && <p className="font-urdu truncate text-xs text-green-700">{product.name_urdu}</p>}
+        </Link>
+        {grade && (
+          <>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="font-mono-num text-base font-semibold">
+                {formatCurrency(pricePerDisplayUnit(grade.price, grade.display_unit))}
+              </span>
+              <span className="text-[11px] text-ink/50">/{grade.display_unit}</span>
+            </div>
+            <div className="mt-auto flex items-center gap-2 pt-1.5">
+              <div className="flex flex-1 items-center justify-between rounded-full border border-ink/10 bg-stone-50 px-1 py-1">
+                <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  onClick={() => step(-1)}
+                  className="flex h-6 w-6 items-center justify-center rounded-full text-ink/60 hover:bg-white"
+                >
+                  <span className="material-symbols-outlined text-[15px]">remove</span>
+                </button>
+                <span className="font-mono-num text-[11.5px] font-semibold">{isUnit ? qty : formatGrams(qty)}</span>
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onClick={() => step(1)}
+                  className="flex h-6 w-6 items-center justify-center rounded-full text-ink/60 hover:bg-white"
+                >
+                  <span className="material-symbols-outlined text-[15px]">add</span>
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={handleAdd}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold-500 text-green-deep transition hover:bg-gold-600"
+                aria-label="Add to cart"
+              >
+                <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
