@@ -6,11 +6,11 @@ name: Keep Supabase Alive
 # ones scheduled for a "popular" time like the top of the hour, can be
 # delayed or occasionally dropped under load. One skipped run at a
 # twice-weekly cadence was enough to blow past the 7-day window and let the
-# project pause anyway. Running daily, at an off-peak minute, gives several
-# days of slack even if individual runs get dropped.
+# project pause anyway. Running every 6 hours, at an off-peak minute, gives
+# a wide margin even if several runs in a row get dropped.
 on:
   schedule:
-    - cron: "17 6 * * *" # every day, 06:17 UTC
+    - cron: "17 */6 * * *" # every 6 hours, offset from the top of the hour
   workflow_dispatch:
 
 jobs:
